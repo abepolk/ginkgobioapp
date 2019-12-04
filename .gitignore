@@ -1,0 +1,2 @@
+# Settings contain the secret key. See ginkgobioapp/settings_for_production.py for something that can replace this in production
+ginkgobioapp/settings.py
