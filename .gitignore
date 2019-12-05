@@ -1,3 +1,5 @@
 set_secret_key.sh
 
 *__pycache__
+
+.idea/*
