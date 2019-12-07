@@ -4,6 +4,7 @@ from django.db import models
 
 class DnaSeq(models.Model):
 
+    name = models.TextField(help_text="Name this sequence")
     seq = models.TextField(help_text='Enter DNA sequence (max 1000 bp)')
 
     # def align(self):
@@ -14,3 +15,4 @@ class DnaSeq(models.Model):
     def __str__(self):
         # len(self.seq) may not work if TextField not coerced to str
         return 'DNA sequence: ' + str(len(self.seq)) + ' bp'
+
