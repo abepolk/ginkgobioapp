@@ -4,17 +4,26 @@ from dna_protein_align.align import Aligner # Change name of align.py
 
 def index(request):
 
+    # The list of previous searches is held in an array. Each entry is a previous search, with elements
+    # elem[0] the sequence, elem[1] the protein name, and elem[2] the protein location (index)
     def serialize_seq_list(seq_data):
-        print(','.join([x for y in seq_data for x in y]))
-        return ','.join([x for y in seq_data for x in y])
+        if seq_data:
+            print(seq_data)
+            return ','.join([x for y in seq_data for x in y])
+        else:
+            return None
 
-    # This may be rotated - check
+    # See comment for serialization method
     def deserialize_seq_list(data_string):
-        request.session['previous_searches'] = []
-        print([x for x in data_string.split(',')])
-        return [x for x in data_string.split(',')]
+        if not data_string:
+            return []
+        flat_list = data_string.split(',')
+        array = []
+        for i in range(0, len(flat_list), 3):
+            # There is guaranteed divisible by 3 num elems in flat_list
+            array.append([flat_list[i], flat_list[i+1], flat_list[i+2]])
+        return array
 
-    # This also needs to display results, not just searches
     previous_searches = deserialize_seq_list(request.session.get('previous_searches', ''))
     is_post = False
     result_found = False
@@ -35,22 +44,20 @@ def index(request):
                 result_found = True
                 protein_name = result[0]
                 protein_index = result[1]
-            previous_searches.append([cleaned_seq, protein_name, protein_index])
+                previous_searches.append([cleaned_seq, protein_name, str(protein_index)])
             request.session['previous_searches'] = serialize_seq_list(previous_searches)
-            # Should do something with HttpResponseDirect ? No because there is only one page
     else:
         form = IndexForm()
 
     # seq = form.cleaned_data['seq']
 
     context = {
-        'form' : form,
-        # The index needs to be fixed
-        'previous_searches' : previous_searches[0:5],
-        'is_post' : is_post,
-        'result_found' : result_found,
-        'protein_name' : protein_name,
-        'protein_index' : protein_index
+        'form':form,
+        'previous_searches' : previous_searches,
+        'is_post':is_post,
+        'result_found':result_found,
+        'protein_name':protein_name,
+        'protein_index':protein_index
     }
 
     return render(request, 'template.html', context=context)

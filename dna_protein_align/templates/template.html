@@ -33,10 +33,11 @@
   {% if previous_searches %}
       <p>Previous searches:</p>
       <ul>
+      <!-- You probably need JS for this part, the templating system is not enough, and limit num entries to 5 -->
           {% for entry in previous_searches %}
-            <li>Sequence: {{ entry[0] }}<br>
-                Protein: {{ entry[1] }}<br>
-                Location on protein: {{ seq[2] }}</li>
+            <li>Sequence: {{ entry }}<br>
+                Protein: {{ entry }}<br>
+                Location on protein: {{ entry }}</li>
           {% endfor %}
       </ul>
   {% endif %}
