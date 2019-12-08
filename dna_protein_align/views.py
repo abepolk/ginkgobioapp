@@ -14,7 +14,7 @@ def index(request):
 
     def deserialize_seq_list(seq_str):
         if not seq_str:
-            return ''
+            return []
         return seq_str.split(',')
 
     previous_searches = deserialize_seq_list(request.session.get('previous_searches', ''))
@@ -26,6 +26,8 @@ def index(request):
 
         if form.is_valid(): # Check this makes sense, i.e. is_valid refers to something that does something useful
             cleaned_seq = form.clean_seq()
+            if form.clean_remove_search_history():
+                previous_searches = []
             previous_searches.append(cleaned_seq)
             request.session['previous_searches'] = serialize_seq_list(previous_searches)
 
@@ -38,16 +40,8 @@ def index(request):
 
     context = {
         'form' : form,
-        'previous_searches' : previous_searches,
+        'previous_searches' : previous_searches[0:5],
         'result' : result
     }
 
-    return render(request, 'template    .html', context=context)
-    
-'''
-class indexForm(CreateView):
-
-    model = DnaSeq
-
-    fields = '__all__' \
-             '''
+    return render(request, 'template.html', context=context)
