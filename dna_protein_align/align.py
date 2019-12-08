@@ -19,9 +19,9 @@ class Aligner():
         for protein_name in self.PROTEIN_NAMES:
             # This can be made more efficient by avoiding f.read() (except you're going to read the
             # whole thing anyway in a search, but here you are reading it twice, in read() and find()
-            # with open(protein_name + '_translated.txt', 'r') as f:
-            import io
-            with io.StringIO('AAGG') as f:
+            with open('dna_protein_align/resources/' + protein_name + '.txt', 'r') as f:
+            #import io
+            #with io.StringIO('AAGGCCC') as f:
                 trans_protein_seq = f.read()
                 index = trans_protein_seq.find(input_seq_string)
                 if index != -1:

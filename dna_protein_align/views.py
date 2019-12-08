@@ -8,7 +8,6 @@ def index(request):
     # elem[0] the sequence, elem[1] the protein name, and elem[2] the protein location (index)
     def serialize_seq_list(seq_data):
         if seq_data:
-            print(seq_data)
             return ','.join([x for y in seq_data for x in y])
         else:
             return None
@@ -48,8 +47,6 @@ def index(request):
             request.session['previous_searches'] = serialize_seq_list(previous_searches)
     else:
         form = IndexForm()
-
-    # seq = form.cleaned_data['seq']
 
     context = {
         'form':form,
