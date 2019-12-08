@@ -22,12 +22,23 @@
           </form>
       </div>
   </div>
-  <p>Results: {{ result }}</p>
-  <p>Previous searches:</p>
-  <ul>
-      {% for seq in previous_searches %}
-        <li>{{ seq }}</li>
-      {% endfor %}
-  </ul>
+  {% if is_post %}
+      {% if result_found %}
+          <p>Sequence found in protein: {{ protein_name }}</p>
+          <p>Location on protein: Base pair {{ protein_index }}</p>
+      {% else %}
+          <p>Sequence not found.</p>
+      {% endif %}
+  {% endif %}
+  {% if previous_searches %}
+      <p>Previous searches:</p>
+      <ul>
+          {% for entry in previous_searches %}
+            <li>Sequence: {{ entry[0] }}<br>
+                Protein: {{ entry[1] }}<br>
+                Location on protein: {{ seq[2] }}</li>
+          {% endfor %}
+      </ul>
+  {% endif %}
 </body>
 </html>

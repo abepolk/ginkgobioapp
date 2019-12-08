@@ -1,37 +1,42 @@
 from django.shortcuts import render
-from django.views.generic.edit import CreateView
-from dna_protein_align.models import DnaSeq
 from dna_protein_align.forms import IndexForm
-from dna_protein_align.align import align
-
-# Create your views here.
-
+from dna_protein_align.align import Aligner # Change name of align.py
 
 def index(request):
 
-    def serialize_seq_list(seq_list):
-        return ','.join(seq_list)
+    def serialize_seq_list(seq_data):
+        print(','.join([x for y in seq_data for x in y]))
+        return ','.join([x for y in seq_data for x in y])
 
-    def deserialize_seq_list(seq_str):
-        if not seq_str:
-            return []
-        return seq_str.split(',')
+    # This may be rotated - check
+    def deserialize_seq_list(data_string):
+        request.session['previous_searches'] = []
+        print([x for x in data_string.split(',')])
+        return [x for x in data_string.split(',')]
 
+    # This also needs to display results, not just searches
     previous_searches = deserialize_seq_list(request.session.get('previous_searches', ''))
-
-    result = ''
+    is_post = False
+    result_found = False
+    protein_name = None
+    protein_index = None
 
     if request.method == 'POST':
+        is_post = True
         form = IndexForm(request.POST)
 
         if form.is_valid(): # Check this makes sense, i.e. is_valid refers to something that does something useful
             cleaned_seq = form.clean_seq()
             if form.clean_remove_search_history():
                 previous_searches = []
-            previous_searches.append(cleaned_seq)
+            aligner = Aligner()
+            result = aligner.find_seq(cleaned_seq)
+            if result:
+                result_found = True
+                protein_name = result[0]
+                protein_index = result[1]
+            previous_searches.append([cleaned_seq, protein_name, protein_index])
             request.session['previous_searches'] = serialize_seq_list(previous_searches)
-
-            result = align(cleaned_seq)
             # Should do something with HttpResponseDirect ? No because there is only one page
     else:
         form = IndexForm()
@@ -40,8 +45,12 @@ def index(request):
 
     context = {
         'form' : form,
+        # The index needs to be fixed
         'previous_searches' : previous_searches[0:5],
-        'result' : result
+        'is_post' : is_post,
+        'result_found' : result_found,
+        'protein_name' : protein_name,
+        'protein_index' : protein_index
     }
 
     return render(request, 'template.html', context=context)
