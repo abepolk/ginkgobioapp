@@ -9,8 +9,8 @@ def index(request):
     # The list of previous searches is held in an array. Each entry is a previous search, with elements
     # elem[0] the sequence, elem[1] the protein name, and elem[2] the protein location (index)
 
+    # The following is covered by json.loads and json.dumps now
     '''
-    # This is covered by json.dumps now
     def serialize_seq_list(seq_data):
         if seq_data:
             return ','.join([x for y in seq_data for x in y])
@@ -31,25 +31,21 @@ def index(request):
 
     previous_searches = json.loads(request.session.get('previous_searches', '[]'))
 
-    # Lower-cased boolean for JS
+    # Initialize vars, lower-cased boolean and null for JS
     is_post = 'false'
     result_found = 'false'
     protein_name = 'null'
     protein_index = 'null'
     validation_throws = 'false'
+    validation_error_message = ''
 
 
     if request.method == 'POST':
-        print('vt')
-        print(validation_throws)
         is_post = 'true'
         form = IndexForm(request.POST)
-        print(form.is_valid())
-        if form.is_valid(): # Check this makes sense, i.e. is_valid refers to something that does something useful
-            try:
-                cleaned_seq = form.clean_seq()
-            except ValidationError as e:
-                validation_throws = 'true'
+        if form.is_valid():
+            # Django docs say this has been cleaned using both clean() and clean_seq() in forms
+            cleaned_seq = form.cleaned_data['seq']
             if form.clean_remove_search_history():
                 previous_searches = []
             aligner = Aligner()
@@ -60,12 +56,17 @@ def index(request):
                 protein_index = result[1]
                 previous_searches.append([cleaned_seq, protein_name, str(protein_index)])
             request.session['previous_searches'] = json.dumps(previous_searches)
+        else:
+            validation_throws = 'true'
+            # There should be no more than one error, and it should be about valid chars
+            validation_error_message = list(form.errors.as_data().values())[0][0].message
     else:
         form = IndexForm()
 
     context = {
         'form' : form,
         'validation_throws' : validation_throws,
+        'validation_error_message' : validation_error_message,
         'previous_searches' : json.dumps(previous_searches),
         'is_post' : is_post,
         'result_found' : result_found,
