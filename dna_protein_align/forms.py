@@ -8,11 +8,8 @@ class IndexForm(forms.Form):
 
     def clean_seq(self):
         data = self.cleaned_data['seq']
-        # This is just my guess on how to validate a DNA sequence
         for bp in data:
             if bp not in ['A', 'C', 'G', 'T']:
-                # The validation error is repeated in main.js, because Python exceptions are currently
-                # not propagated to the browser
                 raise ValidationError(_('Only A, C, G, and T allowed in sequence'))
 
         return data
