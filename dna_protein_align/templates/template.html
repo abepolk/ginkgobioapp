@@ -6,12 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <!-- Add additional JS in static file, and put it somewhere (CSS example below) -->
+    <script type="text/javascript">
+        const is_post = {{ is_post }};
+        const validation_throws = {{ validation_throws }};
+        const result_found = {{ result_found }};
+        // TODO BEFORE PRODUCTION Any var that represents the DNA sequence must be cleaned to prevent
+        // JS injection attacks here, but it may already be clean because the chars may only be in ACGT.
+        // Also JSON has double quotes, so single quotes are used around the JSON string to avoid escaping
+        const previous_searches = JSON.parse({% autoescape off %}'{{ previous_searches }}'{% endautoescape %});
+        const protein_name = "{{ protein_name }}";
+        const protein_index = "{{ protein_index }}";
+    </script>
   {% load static %}
   <!-- <link rel="stylesheet" href="{% static 'css/styles.css' %}"> -->
+    <script src="{% static 'js/main.js' %}"></script>
 </head>
 <body>
   <h1>DNA Sequence Checker</h1>
-  <div class="container-fluid">
+  <div class="container-fluid" id="seqForm">
       <div class="row">
           <form action="" method="post">
               {% csrf_token %}
@@ -22,24 +34,5 @@
           </form>
       </div>
   </div>
-  {% if is_post %}
-      {% if result_found %}
-          <p>Sequence found in protein: {{ protein_name }}</p>
-          <p>Location on protein: Base pair {{ protein_index }}</p>
-      {% else %}
-          <p>Sequence not found.</p>
-      {% endif %}
-  {% endif %}
-  {% if previous_searches %}
-      <p>Previous searches:</p>
-      <ul>
-      <!-- You probably need JS for this part, the templating system is not enough, and limit num entries to 5 -->
-          {% for entry in previous_searches %}
-            <li>Sequence: {{ entry }}<br>
-                Protein: {{ entry }}<br>
-                Location on protein: {{ entry }}</li>
-          {% endfor %}
-      </ul>
-  {% endif %}
 </body>
 </html>
