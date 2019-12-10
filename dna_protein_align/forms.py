@@ -6,7 +6,6 @@ class IndexForm(forms.Form):
     seq = forms.CharField(max_length=255)
     remove_search_history = forms.BooleanField(required=False)
 
-    # It looks ilke this is called by is_valid() or somethign
     def clean_seq(self):
         data = self.cleaned_data['seq']
         # This is just my guess on how to validate a DNA sequence
