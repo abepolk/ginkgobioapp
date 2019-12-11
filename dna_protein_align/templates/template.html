@@ -8,6 +8,12 @@
   {% load static %}
   <!-- <link rel="stylesheet" href="{% static 'css/styles.css' %}"> -->
   <script src="{% static 'js/main.js' %}"></script>
+    <script type="text/javascript">
+    // TODO BEFORE PRODUCTION Any var that represents the DNA sequence must be cleaned to prevent
+    // JS injection attacks here, but it may already be clean because the chars may only be in ACGT.
+    // Also JSON has double quotes, so single quotes are used around the JSON string to avoid escaping
+    const previous_searches = JSON.parse({% autoescape off %}'{{ previous_searches }}'{% endautoescape %});
+    </script>
 </head>
 <body>
   <h1>DNA Sequence Checker</h1>

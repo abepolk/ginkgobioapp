@@ -28,7 +28,6 @@ def index(request):
             array.append([flat_list[i], flat_list[i+1], flat_list[i+2]])
         return array
     '''
-
     previous_searches = json.loads(request.session.get('previous_searches', '[]'))
 
     # Initialize vars, lower-cased boolean and null for JS
@@ -38,7 +37,6 @@ def index(request):
     protein_index = 'null'
     validation_throws = 'false'
     validation_error_message = ''
-
 
     if request.method == 'POST':
         is_post = 'true'
@@ -59,6 +57,7 @@ def index(request):
         else:
             validation_throws = 'true'
             # There should be no more than one error, and it should be about valid chars
+            # This is returning the wrong error
             validation_error_message = list(form.errors.as_data().values())[0][0].message
         # This part is part of the async implementation, it will be wise to reorganize this
         return JsonResponse({
@@ -72,7 +71,6 @@ def index(request):
     else:
         form = IndexForm()
 
-    # Right now nothing is being done with the context - the tempate tags are not in the template
     context = {
         'form' : form,
         'validation_throws' : validation_throws,

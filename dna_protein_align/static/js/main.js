@@ -32,10 +32,19 @@ function post (url, options) {
 window.onload = function () {
   document.getElementById("submit").onclick = function () {
     // post needs two params as it's written
-    post("dna_protein_align/index.html").then((response) => {
+    let seq = document.getElementById("id_seq").value;
+    let remove = document.getElementById("id_remove_search_history").value;
+    // This isn't adding anything to the post
+    post("", {
+      "body" : JSON.stringify({
+        "seq" : seq,
+        "remove_search_history" : remove
+    })}).then((response) => {
       return response.json();
     }).then(data => {
       if (data.validation_throws) {
+        console.log("The validation error message is below");
+        console.log(data.validation_error_message);
         const para8 = document.createElement("p");
         const para8_text = document.createTextNode(data.validation_error_message);
         para8.appendChild(para8_text);
@@ -57,13 +66,12 @@ window.onload = function () {
           document.documentElement.appendChild(para3);
         }
       }
-      // This might need to be moved to complete the logic, right now a get request has no way of
-      // accessing previous searches because it only sends those to the context, and we
-      // are no longer using template tags - the code probably needs to be separated into separate
-      // backend functions for the GET and POST requests, and the static vs dynamic components
+      // Updates previous searches from JSON returned by POST
       update_prev_searches(data.previous_searches);
-    });
-  }
+    }).catch((response) => console.log(response));
+  };
+  // Updates previous searches from cookie
+  update_prev_searches(previous_searches)
 };
 
 function update_prev_searches (previous_searches) {
@@ -73,7 +81,7 @@ function update_prev_searches (previous_searches) {
     para4.appendChild(para4_text);
     document.documentElement.appendChild(para4);
     const len = previous_searches.length;
-    // Most recent five searches excluding current one
+    // Most recent five searches excluding current one - as of now, this may cause duplicating or skipping behavior
     for (let i = len - 2; i >= 0 && i > len - 7; i--) {
       let ul = document.createElement("ul");
       let li5 = document.createElement("li");
