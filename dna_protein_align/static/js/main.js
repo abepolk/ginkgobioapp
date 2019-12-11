@@ -34,7 +34,6 @@ window.onload = function () {
     // post needs two params as it's written
     let seq = document.getElementById("id_seq").value;
     let remove = document.getElementById("id_remove_search_history").value;
-    // This isn't adding anything to the post
     post("", {
       "body" : JSON.stringify({
         "seq" : seq,

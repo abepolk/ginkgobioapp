@@ -40,7 +40,8 @@ def index(request):
 
     if request.method == 'POST':
         is_post = 'true'
-        form = IndexForm(request.POST)
+        # I don't know if if using json.loads here and not using json.POST counts as a hack
+        form = IndexForm(json.loads(request.body))
         if form.is_valid():
             # Django docs say this has been cleaned using both clean() and clean_seq() in forms
             cleaned_seq = form.cleaned_data['seq']
