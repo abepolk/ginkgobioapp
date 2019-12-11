@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from dna_protein_align.forms import IndexForm
 from dna_protein_align.align import Aligner # Change name of align.py
-from django.core.exceptions import ValidationError
+from django.http import JsonResponse
 import json
 
 def index(request):
@@ -60,9 +60,19 @@ def index(request):
             validation_throws = 'true'
             # There should be no more than one error, and it should be about valid chars
             validation_error_message = list(form.errors.as_data().values())[0][0].message
+        # This part is part of the async implementation, it will be wise to reorganize this
+        return JsonResponse({
+            'validation_throws' : validation_throws,
+            'validation_error_message' : validation_error_message,
+            'previous_searches' : previous_searches,
+            'result_found' : result_found,
+            'protein_name' : protein_name,
+            'protein_index' : protein_index
+        })
     else:
         form = IndexForm()
 
+    # Right now nothing is being done with the context - the tempate tags are not in the template
     context = {
         'form' : form,
         'validation_throws' : validation_throws,

@@ -5,18 +5,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <script type="text/javascript">
-    const is_post = {{ is_post }};
-    const validation_throws = {{ validation_throws }};
-    const validation_error_message = "{{ validation_error_message }}";
-    const result_found = {{ result_found }};
-    // TODO BEFORE PRODUCTION Any var that represents the DNA sequence must be cleaned to prevent
-    // JS injection attacks here, but it may already be clean because the chars may only be in ACGT.
-    // Also JSON has double quotes, so single quotes are used around the JSON string to avoid escaping
-    const previous_searches = JSON.parse({% autoescape off %}'{{ previous_searches }}'{% endautoescape %});
-    const protein_name = "{{ protein_name }}";
-    const protein_index = "{{ protein_index }}";
-    </script>
   {% load static %}
   <!-- <link rel="stylesheet" href="{% static 'css/styles.css' %}"> -->
   <script src="{% static 'js/main.js' %}"></script>
@@ -30,7 +18,7 @@
         <table>
           {{ form.as_table }}
         </table>
-        <input type="submit" value="submit">
+        <input id="submit" type="button" value="submit">
       </form>
     </div>
   </div>
