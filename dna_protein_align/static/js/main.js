@@ -42,8 +42,6 @@ window.onload = function () {
       return response.json();
     }).then(data => {
       if (data.validation_throws) {
-        console.log("The validation error message is below");
-        console.log(data.validation_error_message);
         const para8 = document.createElement("p");
         const para8_text = document.createTextNode(data.validation_error_message);
         para8.appendChild(para8_text);
@@ -66,6 +64,8 @@ window.onload = function () {
         }
       }
       // Updates previous searches from JSON returned by POST
+      const prev_div = document.getElementById("prev_div");
+      document.documentElement.removeChild(prev_div);
       update_prev_searches(data.previous_searches);
     }).catch((response) => console.log(response));
   };
@@ -73,12 +73,15 @@ window.onload = function () {
   update_prev_searches(previous_searches)
 };
 
+// Returns reference to previous searches node so it can be removed later
 function update_prev_searches (previous_searches) {
+  const prev_div = document.createElement("div");
+  prev_div.setAttribute("id", "prev_div");
   if (previous_searches.length > 1) {
     const para4 = document.createElement("p");
     const para4_text = document.createTextNode("Previous searches");
     para4.appendChild(para4_text);
-    document.documentElement.appendChild(para4);
+    prev_div.appendChild(para4);
     const len = previous_searches.length;
     // Most recent five searches excluding current one - as of now, this may cause duplicating or skipping behavior
     for (let i = len - 2; i >= 0 && i > len - 7; i--) {
@@ -95,9 +98,10 @@ function update_prev_searches (previous_searches) {
       ul.appendChild(li5);
       ul.appendChild(li6);
       ul.appendChild(li7);
-      document.documentElement.appendChild(ul);
+      prev_div.appendChild(ul);
     }
   }
+  document.documentElement.append(prev_div);
 }
   
   

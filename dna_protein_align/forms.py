@@ -7,7 +7,6 @@ class IndexForm(forms.Form):
     remove_search_history = forms.BooleanField(required=False)
 
     def clean_seq(self):
-        print('cleanig data')
         data = self.cleaned_data['seq']
         for bp in data:
             if bp not in ['A', 'C', 'G', 'T']:
