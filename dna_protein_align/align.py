@@ -17,6 +17,7 @@ class Aligner():
                 trans_protein_seq = f.read()
                 # Want base pairs to be 1-indexed, not 0-indexed as in Python, so add 1
                 index = trans_protein_seq.find(input_seq_string) + 1
-                if index != -1:
+                # Find returns minus one if sequence not found, and -1 + 1 = 0, and line above has + 1
+                if index != 0:
                     return protein_name, index
         return None
