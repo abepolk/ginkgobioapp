@@ -10,8 +10,7 @@
     <script type="text/javascript">
     // Any var that represents the DNA sequence must be cleaned to prevent
     // JS injection attacks here. It currently is clean because the chars may only be in ACGT.
-    // This must not be changed.
-    // Also JSON has double quotes, so single quotes are used around the JSON string to avoid the need to esccape
+    // Also JSON has double quotes, so single quotes are used around the JSON string to avoid the need to escape
     const searches = JSON.parse({% autoescape off %}'{{ searches }}'{% endautoescape %});
     </script>
 </head>
