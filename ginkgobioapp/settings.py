@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import logging.config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +24,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production
-# See note in settings.LOGGING when editing this var
 DEBUG = False
 
 ALLOWED_HOSTS = ['*']
@@ -115,9 +115,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-print('Processing settings')
+LOGGING_CONFIG = None
 
-LOGGING = {
+logging.config.dictConfig({
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
@@ -125,13 +125,9 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
-        'django_server': {
-            'level': 'DEBUG'
-        },
-        'file': {
+        'django.server': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': '/log.txt',
+            'class': 'logging.StreamHandler',
         }
     },
     'loggers': {
@@ -148,9 +144,14 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
-        }
-    },
-}
+        },
+        'django.server': {
+                'handlers': ['django.server'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+        },
+    })
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/

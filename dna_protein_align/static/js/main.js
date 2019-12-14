@@ -60,11 +60,13 @@ window.onload = function () {
           const result_div = document.createElement("div");
           result_div.setAttribute("id", "result_div");
         if (data.result_found === 'true') {
+          const len_data = data.searches.length;
           const para1 = document.createElement("p");
-          const para1_text = document.createTextNode("Sequence found in protein: ".concat(data.searches[0][1]));
+          // len - 1 gives most recent search, the search just made
+          const para1_text = document.createTextNode("Sequence found in protein: ".concat(data.searches[len_data - 1][1]));
           para1.appendChild(para1_text);
           const para2 = document.createElement("p");
-          const para2_text = document.createTextNode("Location on protein: Starts at base pair ".concat(data.searches[0][2]));
+          const para2_text = document.createTextNode("Location on protein: Starts at base pair ".concat(data.searches[len_data - 1][2]));
           para2.appendChild(para2_text);
           result_div.appendChild(para1);
           result_div.appendChild(para2);

@@ -14,8 +14,6 @@ def index(request):
     if request.method == 'POST':
         # Initialize vars, lower-cased boolean and null for JS
         result_found = 'false'
-        protein_name = 'null'
-        protein_index = 'null'
         validation_throws = 'false'
         validation_error_message = ''
         # I don't know if if using json.loads here and not using json.POST counts as a hack
